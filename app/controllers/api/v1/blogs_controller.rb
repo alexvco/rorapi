@@ -50,6 +50,6 @@ class Api::V1::BlogsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def blog_params
-      params.require(:blog).permit(:user_id, :title, :body, :status)
+      params.require(:blog).permit(:user_id, :title, :body, :status, category_ids: [])
     end
 end
