@@ -50,6 +50,13 @@ class Api::V1::UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
+      # You can disguise your inherited model to it's parent before the permit action
+      if params.has_key? :member
+        params[:user] = params.delete :member
+      elsif params.has_key? :author
+        params[:user] = params.delete :author
+      end
+
       params.require(:user).permit(:email, :type, :first_name, :last_name)
     end
 end
