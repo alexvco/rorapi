@@ -3,14 +3,14 @@ class Api::V1::UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all
+    users = User.all
 
-    render json: @users
+    api_response(payload: UserSerializer.new(users))
   end
 
   # GET /users/1
   def show
-    render json: @user
+    api_response(payload: UserSerializer.new(@user))
   end
 
   # POST /users
@@ -18,24 +18,28 @@ class Api::V1::UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      render json: @user, status: :created, location: @user
+      api_response(payload: UserSerializer.new(@user), status: :created)
     else
-      render json: @user.errors, status: :unprocessable_entity
+      api_error(title: 'Failed to create user', detail: @user.errors.full_messages.to_sentence, status: :unprocessable_entity)
     end
   end
 
   # PATCH/PUT /users/1
   def update
     if @user.update(user_params)
-      render json: @user
+      api_response(payload: UserSerializer.new(@user))
     else
-      render json: @user.errors, status: :unprocessable_entity
+      api_error(title: 'Failed to update user', detail: @user.errors.full_messages.to_sentence, status: :unprocessable_entity)
     end
   end
 
   # DELETE /users/1
   def destroy
-    @user.destroy
+    if @user.destroy
+      api_success(message: 'User was deleted successfully')
+    else
+      api_error(title: 'Failed to delete user', detail: @user.errors.full_messages.to_sentence, status: :unprocessable_entity)
+    end
   end
 
   private
