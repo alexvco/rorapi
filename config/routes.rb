@@ -10,9 +10,11 @@ Rails.application.routes.draw do
       match '/users/:id',      to: 'users#show',    via: :get,           as:   :user
       match '/users/:id',      to: 'users#update',  via: [:patch, :put]
       match '/users/:id',      to: 'users#destroy', via: :delete
-  
+
       resources :blogs
       resources :images
     end
   end
+
+  match '*a', to: 'application#routing_error', via: %i[delete get patch post], defaults: { format: :json }
 end

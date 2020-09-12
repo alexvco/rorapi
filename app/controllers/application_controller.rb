@@ -3,6 +3,12 @@ class ApplicationController < ActionController::API
   rescue_from StandardError, with: :render_500
   rescue_from ActiveRecord::RecordNotFound, with: :render_404
 
+  def routing_error
+    api_error title: 'Not found',
+              detail: 'Requested route was not found',
+              status: :not_found
+  end
+
   def render_404
     api_error title: 'Not found',
               detail: 'Requested resource was not found',
