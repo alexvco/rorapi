@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :categories
   root 'api/v1/blogs#index'
 
   namespace 'api', defaults: { format: :json } do
