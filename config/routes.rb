@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :addresses
   root 'api/v1/blogs#index'
 
   namespace 'api', defaults: { format: :json } do
@@ -12,6 +11,7 @@ Rails.application.routes.draw do
       match '/users/:id',      to: 'users#update',  via: [:patch, :put]
       match '/users/:id',      to: 'users#destroy', via: :delete
 
+      resources :addresses
       resources :categories
       resources :blogs
       resources :images
