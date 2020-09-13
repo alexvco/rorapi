@@ -10,7 +10,7 @@ class Api::V1::UsersController < ApplicationController
 
   # GET /users/1
   def show
-    api_response(payload: UserSerializer.new(@user))
+    api_response(payload: UserSerializer.new(@user, show_options))
   end
 
   # POST /users
@@ -58,5 +58,106 @@ class Api::V1::UsersController < ApplicationController
       end
 
       params.require(:user).permit(:email, :type, :first_name, :last_name)
+    end
+
+    def show_options
+      {
+        include: [:blogs, :"blogs.images"],
+        fields: {
+          user: [:first_name, :last_name, :blogs],
+          blog: [:title, :images],
+          image: [:filename]
+        }
+      }
+    end
+
+    # the show_options will return the following (example):
+    # I wrapped it in a method that never gets called to keep syntax highlighting as opposed to commented out
+    def example_result
+      {
+          "data": {
+              "id": "1",
+              "type": "user",
+              "attributes": {
+                  "first_name": "test",
+                  "last_name": "jones"
+              },
+              "relationships": {
+                  "blogs": {
+                      "data": [
+                          {
+                              "id": "1",
+                              "type": "blog"
+                          },
+                          {
+                              "id": "3",
+                              "type": "blog"
+                          }
+                      ]
+                  }
+              }
+          },
+          "included": [
+              {
+                  "id": "1",
+                  "type": "blog",
+                  "attributes": {
+                      "title": "Blog 1"
+                  },
+                  "relationships": {
+                      "images": {
+                          "data": [
+                              {
+                                  "id": "4",
+                                  "type": "image"
+                              },
+                              {
+                                  "id": "3",
+                                  "type": "image"
+                              }
+                          ]
+                      }
+                  }
+              },
+              {
+                  "id": "3",
+                  "type": "blog",
+                  "attributes": {
+                      "title": "another blog 1"
+                  },
+                  "relationships": {
+                      "images": {
+                          "data": [
+                              {
+                                  "id": "5",
+                                  "type": "image"
+                              }
+                          ]
+                      }
+                  }
+              },
+              {
+                  "id": "4",
+                  "type": "image",
+                  "attributes": {
+                      "filename": "ghg"
+                  }
+              },
+              {
+                  "id": "3",
+                  "type": "image",
+                  "attributes": {
+                      "filename": "ii"
+                  }
+              },
+              {
+                  "id": "5",
+                  "type": "image",
+                  "attributes": {
+                      "filename": "rty"
+                  }
+              }
+          ]
+      }
     end
 end
