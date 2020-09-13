@@ -10,7 +10,7 @@ class Api::V1::BlogsController < ApplicationController
 
   # GET /blogs/1
   def show
-    api_response(payload: BlogSerializer.new(@blog))
+    api_response(payload: BlogSerializer.new(@blog, show_options))
   end
 
   # POST /users
@@ -51,5 +51,16 @@ class Api::V1::BlogsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def blog_params
       params.require(:blog).permit(:user_id, :title, :body, :status, category_ids: [])
+    end
+
+    def show_options
+      {
+        include: [:categories, :images],
+        fields: {
+          blog: [:title, :body, :images, :categories],
+          image: [:filename],
+          category: [:name]
+        }
+      }
     end
 end
