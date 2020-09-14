@@ -1,30 +1,30 @@
 require "rails_helper"
 
-RSpec.describe BlogsController, type: :routing do
+RSpec.describe Api::V1::BlogsController, type: :routing do
   describe "routing" do
     it "routes to #index" do
-      expect(get: "/blogs").to route_to("blogs#index")
+      expect(get: "/api/v1/blogs").to route_to("api/v1/blogs#index", format: :json)
     end
 
     it "routes to #show" do
-      expect(get: "/blogs/1").to route_to("blogs#show", id: "1")
+      expect(get: "/api/v1/blogs/1").to route_to("api/v1/blogs#show", id: "1", format: :json)
     end
 
 
     it "routes to #create" do
-      expect(post: "/blogs").to route_to("blogs#create")
+      expect(post: "/api/v1/blogs").to route_to("api/v1/blogs#create", format: :json)
     end
 
     it "routes to #update via PUT" do
-      expect(put: "/blogs/1").to route_to("blogs#update", id: "1")
+      expect(put: "/api/v1/blogs/1").to route_to("api/v1/blogs#update", id: "1", format: :json)
     end
 
     it "routes to #update via PATCH" do
-      expect(patch: "/blogs/1").to route_to("blogs#update", id: "1")
+      expect(patch: "/api/v1/blogs/1").to route_to("api/v1/blogs#update", id: "1", format: :json)
     end
 
     it "routes to #destroy" do
-      expect(delete: "/blogs/1").to route_to("blogs#destroy", id: "1")
+      expect(delete: "/api/v1/blogs/1").to route_to("api/v1/blogs#destroy", id: "1", format: :json)
     end
   end
 end

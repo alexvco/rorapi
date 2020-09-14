@@ -2,6 +2,10 @@ FactoryBot.define do
   factory :address do
     city { "MyString" }
     zip { "MyString" }
-    user { nil }
+
+    trait :in_la do
+      city { 'la' }
+      zip { "90012" }
+    end
   end
 end

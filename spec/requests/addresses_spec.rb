@@ -12,16 +12,19 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe "/addresses", type: :request do
+RSpec.describe Api::V1::AddressesController, type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Address. As you add validations to Address, be sure to
   # adjust the attributes here as well.
+
+  let(:user) { create(:user) }
+
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {city: 'la', zip: '90001', user_id: user.id}
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {esh: 'gov', ggg: 'hav'}
   }
 
   # This should return the minimal set of values that should be in the headers
@@ -35,7 +38,7 @@ RSpec.describe "/addresses", type: :request do
   describe "GET /index" do
     it "renders a successful response" do
       Address.create! valid_attributes
-      get addresses_url, headers: valid_headers, as: :json
+      get api_v1_addresses_url, headers: valid_headers, as: :json
       expect(response).to be_successful
     end
   end
@@ -43,7 +46,7 @@ RSpec.describe "/addresses", type: :request do
   describe "GET /show" do
     it "renders a successful response" do
       address = Address.create! valid_attributes
-      get address_url(address), as: :json
+      get api_v1_address_url(address), as: :json
       expect(response).to be_successful
     end
   end
@@ -52,13 +55,13 @@ RSpec.describe "/addresses", type: :request do
     context "with valid parameters" do
       it "creates a new Address" do
         expect {
-          post addresses_url,
+          post api_v1_addresses_url,
                params: { address: valid_attributes }, headers: valid_headers, as: :json
         }.to change(Address, :count).by(1)
       end
 
       it "renders a JSON response with the new address" do
-        post addresses_url,
+        post api_v1_addresses_url,
              params: { address: valid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including("application/json"))
@@ -68,13 +71,13 @@ RSpec.describe "/addresses", type: :request do
     context "with invalid parameters" do
       it "does not create a new Address" do
         expect {
-          post addresses_url,
+          post api_v1_addresses_url,
                params: { address: invalid_attributes }, as: :json
         }.to change(Address, :count).by(0)
       end
 
       it "renders a JSON response with errors for the new address" do
-        post addresses_url,
+        post api_v1_addresses_url,
              params: { address: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq("application/json")
@@ -84,33 +87,28 @@ RSpec.describe "/addresses", type: :request do
 
   describe "PATCH /update" do
     context "with valid parameters" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
       it "updates the requested address" do
         address = Address.create! valid_attributes
-        patch address_url(address),
-              params: { address: invalid_attributes }, headers: valid_headers, as: :json
-        address.reload
-        skip("Add assertions for updated state")
+        patch api_v1_address_url(address),
+             params: { address: {city: 'ny'} }, headers: valid_headers, as: :json
+        expect {address.reload}.to change {address.city}.from('la').to('ny')
       end
 
       it "renders a JSON response with the address" do
         address = Address.create! valid_attributes
-        patch address_url(address),
-              params: { address: invalid_attributes }, headers: valid_headers, as: :json
+        patch api_v1_address_url(address),
+              params: { address: {city: 'ny'} }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq("application/json")
       end
     end
 
     context "with invalid parameters" do
-      it "renders a JSON response with errors for the address" do
+      it "does not update the requested address" do
         address = Address.create! valid_attributes
-        patch address_url(address),
-              params: { address: invalid_attributes }, headers: valid_headers, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
+        patch api_v1_address_url(address),
+              params: { address: {esh: 'gov'} }, headers: valid_headers, as: :json
+        expect {address.reload}.not_to change {address}
         expect(response.content_type).to eq("application/json")
       end
     end
@@ -120,7 +118,7 @@ RSpec.describe "/addresses", type: :request do
     it "destroys the requested address" do
       address = Address.create! valid_attributes
       expect {
-        delete address_url(address), headers: valid_headers, as: :json
+        delete api_v1_address_url(address), headers: valid_headers, as: :json
       }.to change(Address, :count).by(-1)
     end
   end
