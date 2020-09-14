@@ -57,7 +57,7 @@ class Api::V1::UsersController < ApplicationController
         params[:user] = params.delete :author
       end
 
-      params.require(:user).permit(:email, :type, :first_name, :last_name)
+      params.require(:user).permit(:email, :type, :first_name, :last_name, addresses_attributes: [:id, :street, :city, :zip, :user_id, :_destroy])
     end
 
     def show_options
