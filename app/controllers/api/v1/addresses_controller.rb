@@ -2,9 +2,6 @@ class Api::V1::AddressesController < ApplicationController
   before_action :set_address, only: [:show, :update, :destroy]
 
   def index
-    puts 'x' * 400
-    puts address_params.keys.first.class
-    puts 'x' * 400
     addresses = Address.all
 
     api_response(payload: AddressSerializer.new(addresses))
